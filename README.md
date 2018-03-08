@@ -1,5 +1,5 @@
 # Laravel Post Deploy Commands
-### TL;DR: Create commands that will be run once so that you don't have to remember about it.
+### TL;DR: Create command files that will be run once so that you don't have to remember about it.
 
 This small package is designed to help you make easy changes in your production environment. In short: it is a slightly modified Laravel Migrator in order to run single commands files. Perhaps you are wondering for what purpose?
 
