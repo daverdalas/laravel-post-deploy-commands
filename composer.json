@@ -1,18 +1,37 @@
 {
     "name": "daverdalas/laravel-post-deploy-commands",
+    "description": "Create command files that will be run once so that you don't have to remember about it.",
+    "keywords": [
+        "deploy",
+        "continuous-delivery",
+        "commands",
+        "migrations",
+        "laravel"
+    ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Piotr Suchanek",
             "email": "hunterdaver@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "php": ">=5.5",
+        "illuminate/config": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*",
+        "illuminate/filesystem": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "DaverDalas\\LaravelPostDeployCommands\\": "src"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "DaverDalas\\LaravelPostDeployCommands\\ServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
