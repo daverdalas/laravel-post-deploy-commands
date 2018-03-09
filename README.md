@@ -23,17 +23,36 @@ The package will automatically register itself with Laravel 5.5+. For older vers
 ```php
 DaverDalas\LaravelPostDeployCommands\ServiceProvider::class
 ```
-
 ## Usage
 Create new command file. The file will be saved in database/commands directory.
 ```
 php artisan make:deploy-command your_command_name
 ```
+
 Run new commands (Those which have not been started before).
 ```
 php artisan deploy-commands:run
 ```
+This will generate a command file `TIMESTAMP_your_command_name.php` in the `dabase/commands` directory.
+```php
+<?php
 
+use Illuminate\Console\Command;
+
+class YourCommandName extends Command
+{
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        // $this->info('Command message');
+    }
+}
+```
+You can freely edit file at your discretion:)
 ## TODO
 - clean code
 - write some tests
