@@ -4,7 +4,7 @@ namespace DaverDalas\LaravelPostDeployCommands;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
@@ -16,7 +16,7 @@ class CommandRunner
     /**
      * The Laravel application instance.
      *
-     * @var Application
+     * @var Container
      */
     protected $laravel;
 
@@ -65,13 +65,13 @@ class CommandRunner
     /**
      * Create a new migrator instance.
      *
-     * @param Application $laravel
+     * @param Container $laravel
      * @param DatabaseMigrationRepository $repository
      * @param  \Illuminate\Database\ConnectionResolverInterface $resolver
      * @param  \Illuminate\Filesystem\Filesystem $files
      */
     public function __construct(
-        Application $laravel,
+        Container $laravel,
         DatabaseMigrationRepository $repository,
         Resolver $resolver,
         Filesystem $files)
