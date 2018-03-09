@@ -14,6 +14,16 @@ You probably used one of the two methods:
 
 The solution I created allows you to easily create commands that will run only once and exactly where you need them. You can easly integrate thmen to your Continuous Delivery process and forget about running changes yourself.
 
+## Installation
+1. Install the package via Composer:
+```
+composer require daverdalas/laravel-post-deploy-commands
+```
+The package will automatically register itself with Laravel 5.5+. For older versions of Laravel or Lumen register ServiceProvider:
+```php
+DaverDalas\LaravelPostDeployCommands\ServiceProvider::class
+```
+
 ## Usage
 Create new command file. The file will be saved in database/commands directory.
 ```
