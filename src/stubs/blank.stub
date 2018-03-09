@@ -11,6 +11,6 @@ class DummyClass extends Command
      */
     public function handle()
     {
-        //
+        // $this->info('Command message');
     }
 }
