@@ -211,14 +211,14 @@ class CommandRunner
     /**
      * Pretend to run the migrations.
      *
-     * @param  object  $migration
+     * @param  object|Command  $command
      * @param  string  $method
      * @return void
      */
-    protected function pretendToRun($migration, $method)
+    protected function pretendToRun($command, $method)
     {
-        foreach ($this->getQueries($migration, $method) as $query) {
-            $name = get_class($migration);
+        foreach ($this->getQueries($command, $method) as $query) {
+            $name = get_class($command);
 
             $this->note("<info>{$name}:</info> {$query['query']}");
         }
@@ -227,22 +227,20 @@ class CommandRunner
     /**
      * Get all of the queries that would be run for a migration.
      *
-     * @param  object  $migration
+     * @param  object|Command  $command
      * @param  string  $method
      * @return array
      */
-    protected function getQueries($migration, $method)
+    protected function getQueries($command, $method)
     {
         // Now that we have the connections we can resolve it and pretend to run the
         // queries against the database returning the array of raw SQL statements
         // that would get fired against the database system for this migration.
-        $db = $this->resolveConnection(
-            $migration->getConnection()
-        );
+        $db = $this->resolveConnection(null);
 
-        return $db->pretend(function () use ($migration, $method) {
-            if (method_exists($migration, $method)) {
-                $migration->{$method}();
+        return $db->pretend(function () use ($command, $method) {
+            if (method_exists($command, $method)) {
+                $command->{$method}();
             }
         });
     }

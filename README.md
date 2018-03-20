@@ -29,10 +29,6 @@ Create new command file. The file will be saved in database/commands directory.
 php artisan make:deploy-command your_command_name
 ```
 
-Run new commands (Those which have not been started before).
-```
-php artisan deploy-commands:run
-```
 This will generate a command file `TIMESTAMP_your_command_name.php` in the `dabase/commands` directory.
 ```php
 <?php
@@ -52,7 +48,27 @@ class YourCommandName extends Command
     }
 }
 ```
-You can freely edit file at your discretion:)
+You can freely edit file at your discretion :)
+
+Available options:
+```
+--path=
+```
+The location where the command file should be created.
+
+Run new commands (Those which have not been started before).
+```
+php artisan deploy-commands:run
+```
+Available options:
+```
+--pretend
+```
+Dump the SQL queries that would be run.
+```
+--path=
+```
+The path of commands files to be executed. E.g. `--path=/commands/`.
 ## TODO
 - clean code
 - write some tests

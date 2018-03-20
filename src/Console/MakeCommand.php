@@ -14,7 +14,7 @@ class MakeCommand extends BaseCommand
      * @var string
      */
     protected $signature = 'make:deploy-command {name : The name of the command.}
-        {--path= : The location where the migration file should be created.}';
+        {--path= : The location where the command file should be created.}';
 
     /**
      * The console command description.

@@ -12,7 +12,7 @@ class RunCommand extends BaseCommand
      * @var string
      */
     protected $signature = 'deploy-commands:run {--database= : The database connection to use.}
-                {--path= : The path of migrations files to be executed.}
+                {--path= : The path of commands files to be executed.}
                 {--pretend : Dump the SQL queries that would be run.}';
 
     /**
