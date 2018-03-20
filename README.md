@@ -24,7 +24,7 @@ The package will automatically register itself with Laravel 5.5+. For older vers
 DaverDalas\LaravelPostDeployCommands\ServiceProvider::class
 ```
 ## Usage
-Create new command file. The file will be saved in database/commands directory.
+**Create new command file.** The file will be saved in database/commands directory.
 ```
 php artisan make:deploy-command your_command_name
 ```
@@ -56,7 +56,7 @@ Available options:
 ```
 The location where the command file should be created.
 
-Run new commands (Those which have not been started before).
+**Run new commands** (Those which have not been started before).
 ```
 php artisan deploy-commands:run
 ```
