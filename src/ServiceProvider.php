@@ -4,6 +4,7 @@ namespace DaverDalas\LaravelPostDeployCommands;
 
 use DaverDalas\LaravelPostDeployCommands\Console\InstallCommand;
 use DaverDalas\LaravelPostDeployCommands\Console\MakeCommand;
+use DaverDalas\LaravelPostDeployCommands\Console\MarkCommand;
 use DaverDalas\LaravelPostDeployCommands\Console\RunCommand;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -24,7 +25,8 @@ class ServiceProvider extends BaseServiceProvider
             $this->commands([
                 'command.deploy-commands.install',
                 'command.deploy-commands.make',
-                'command.deploy-commands.run'
+                'command.deploy-commands.run',
+                'command.deploy-commands.mark'
             ]);
         }
     }
@@ -53,6 +55,8 @@ class ServiceProvider extends BaseServiceProvider
             $this->registerMakeCommand();
 
             $this->registerRunCommand();
+
+            $this->registerMarkCommand();
         }
     }
 
@@ -139,6 +143,18 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton('command.deploy-commands.run', function ($app) {
             return new RunCommand($app['deploy-commands.runner']);
+        });
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMarkCommand()
+    {
+        $this->app->singleton('command.deploy-commands.mark', function ($app) {
+            return new MarkCommand($app['deploy-commands.runner']);
         });
     }
 

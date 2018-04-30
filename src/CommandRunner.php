@@ -74,8 +74,8 @@ class CommandRunner
         Container $laravel,
         DatabaseMigrationRepository $repository,
         Resolver $resolver,
-        Filesystem $files)
-    {
+        Filesystem $files
+    ) {
         $this->laravel = $laravel;
         $this->files = $files;
         $this->resolver = $resolver;
@@ -116,9 +116,7 @@ class CommandRunner
         // run each of the outstanding migrations against a database connection.
         $files = $this->getCommandFiles($paths);
 
-        $this->requireFiles($migrations = $this->pendingMigrations(
-            $files, $this->repository->getRan()
-        ));
+        $migrations = $this->requirePendingMigrations($files);
 
         // Once we have all these migrations that are outstanding we are ready to run
         // we will go ahead and run them "up". This will execute each migration as
@@ -129,10 +127,52 @@ class CommandRunner
     }
 
     /**
+     * @param array $paths
+     * @param array $options
+     * @return array
+     */
+    public function markAllCompleted($paths = [], array $options = [])
+    {
+        $files = $this->getCommandFiles($paths);
+
+        $migrations = $this->requirePendingMigrations($files);
+
+        foreach ($migrations as $file) {
+            $this->markFileCompleted($file);
+        }
+
+        $this->note("<info>Marked all pending commands as completed</info>");
+
+        return $migrations;
+    }
+
+    /**
+     * @param string $file
+     * @return void
+     */
+    protected function markFileCompleted($file)
+    {
+        $name = $this->getCommandName($file);
+        $this->repository->log($name);
+    }
+
+    /**
+     * @param array $files
+     * @return array
+     */
+    protected function requirePendingMigrations(array $files = [])
+    {
+        $this->requireFiles($migrations = $this->pendingMigrations(
+            $files, $this->repository->getRan()
+        ));
+        return $migrations;
+    }
+
+    /**
      * Get the migration files that have not yet run.
      *
-     * @param  array  $files
-     * @param  array  $ran
+     * @param  array $files
+     * @param  array $ran
      * @return array
      */
     protected function pendingMigrations($files, $ran)
@@ -211,8 +251,8 @@ class CommandRunner
     /**
      * Pretend to run the migrations.
      *
-     * @param  object|Command  $command
-     * @param  string  $method
+     * @param  object|Command $command
+     * @param  string $method
      * @return void
      */
     protected function pretendToRun($command, $method)
@@ -227,8 +267,8 @@ class CommandRunner
     /**
      * Get all of the queries that would be run for a migration.
      *
-     * @param  object|Command  $command
-     * @param  string  $method
+     * @param  object|Command $command
+     * @param  string $method
      * @return array
      */
     protected function getQueries($command, $method)
@@ -248,7 +288,7 @@ class CommandRunner
     /**
      * Resolve a migration instance from a file.
      *
-     * @param  string  $file
+     * @param  string $file
      * @return object|Command
      */
     public function resolve($file)
@@ -265,13 +305,13 @@ class CommandRunner
     /**
      * Get all of the migration files in a given path.
      *
-     * @param  string|array  $paths
+     * @param  string|array $paths
      * @return array
      */
     public function getCommandFiles($paths)
     {
         return Collection::make($paths)->flatMap(function ($path) {
-            return $this->files->glob($path.'/*_*.php');
+            return $this->files->glob($path . '/*_*.php');
         })->filter()->sortBy(function ($file) {
             return $this->getCommandName($file);
         })->values()->keyBy(function ($file) {
@@ -282,7 +322,7 @@ class CommandRunner
     /**
      * Require in all the migration files in a given path.
      *
-     * @param  array   $files
+     * @param  array $files
      * @return void
      */
     public function requireFiles(array $files)
@@ -295,7 +335,7 @@ class CommandRunner
     /**
      * Get the name of the migration.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function getCommandName($path)
@@ -306,7 +346,7 @@ class CommandRunner
     /**
      * Register a custom migration path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return void
      */
     public function path($path)
@@ -327,12 +367,12 @@ class CommandRunner
     /**
      * Set the default connection name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return void
      */
     public function setConnection($name)
     {
-        if (! is_null($name)) {
+        if (!is_null($name)) {
             $this->resolver->setDefaultConnection($name);
         }
 
@@ -344,7 +384,7 @@ class CommandRunner
     /**
      * Resolve the database connection instance.
      *
-     * @param  string  $connection
+     * @param  string $connection
      * @return \Illuminate\Database\Connection
      */
     public function resolveConnection($connection)
@@ -355,7 +395,7 @@ class CommandRunner
     /**
      * Get the schema grammar out of a migration connection.
      *
-     * @param  \Illuminate\Database\Connection  $connection
+     * @param  \Illuminate\Database\Connection $connection
      * @return \Illuminate\Database\Schema\Grammars\Grammar
      */
     protected function getSchemaGrammar($connection)
@@ -402,7 +442,7 @@ class CommandRunner
     /**
      * Raise a note event for the migrator.
      *
-     * @param  string  $message
+     * @param  string $message
      * @return void
      */
     protected function note($message)

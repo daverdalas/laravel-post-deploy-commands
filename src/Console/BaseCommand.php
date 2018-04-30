@@ -36,4 +36,20 @@ class BaseCommand extends Command
     {
         return $this->laravel->databasePath().DIRECTORY_SEPARATOR.'commands';
     }
+
+    /**
+     * Prepare the migration database for running.
+     *
+     * @return void
+     */
+    protected function prepareDatabase()
+    {
+        $this->commandRunner->setConnection($this->option('database'));
+
+        if (! $this->commandRunner->repositoryExists()) {
+            $this->call(
+                'deploy-commands:install', ['--database' => $this->option('database')]
+            );
+        }
+    }
 }

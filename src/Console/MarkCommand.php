@@ -4,23 +4,22 @@ namespace DaverDalas\LaravelPostDeployCommands\Console;
 
 use DaverDalas\LaravelPostDeployCommands\CommandRunner;
 
-class RunCommand extends BaseCommand
+class MarkCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'deploy-commands:run {--database= : The database connection to use.}
-                {--path= : The path of commands files to be executed.}
-                {--pretend : Dump the SQL queries that would be run.}';
+    protected $signature = 'deploy-commands:mark-all-completed {--database= : The database connection to use.}
+                {--path= : The path of commands files to be executed.}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Run the post deploy commands';
+    protected $description = 'Mark all post deploy commands as completed';
 
     /**
      * The CommandRunner instance.
@@ -58,8 +57,6 @@ class RunCommand extends BaseCommand
         // Next, we will check to see if a path option has been defined. If it has
         // we will use the path relative to the root of this installation folder
         // so that migrations may be run for any path within the applications.
-        $this->commandRunner->run($this->getCommandPaths(), [
-            'pretend' => $this->option('pretend'),
-        ]);
+        $this->commandRunner->markAllCompleted($this->getCommandPaths());
     }
 }
