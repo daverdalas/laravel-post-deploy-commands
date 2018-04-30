@@ -69,6 +69,11 @@ Dump the SQL queries that would be run.
 --path=
 ```
 The path of commands files to be executed. E.g. `--path=/commands/`.
+**Mark all completed**
+```
+php artisan deploy-commands:mark-all-completed
+```
+Mark all pending commands as completed. Useful in debuging or local development.
 ## TODO
 - clean code
 - write some tests
