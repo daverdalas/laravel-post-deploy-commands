@@ -23,10 +23,10 @@ class ServiceProvider extends BaseServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                'command.deploy-commands.install',
-                'command.deploy-commands.make',
-                'command.deploy-commands.run',
-                'command.deploy-commands.mark'
+                InstallCommand::class,
+                MakeCommand::class,
+                RunCommand::class,
+                MarkCommand::class,
             ]);
         }
     }
@@ -43,32 +43,24 @@ class ServiceProvider extends BaseServiceProvider
         );
 
         $this->registerRepository();
-
         $this->registerRunner();
-
         $this->registerCreator();
 
         if ($this->app->runningInConsole()) {
-            // Register commands
             $this->registerMigrateInstallCommand();
-
             $this->registerMakeCommand();
-
             $this->registerRunCommand();
-
             $this->registerMarkCommand();
         }
     }
 
     /**
      * Register the migration repository service.
-     *
-     * @return void
      */
-    protected function registerRepository()
+    protected function registerRepository(): void
     {
-        $this->app->singleton('deploy-commands.repository', function ($app) {
-            $table = $app['config']['deploy-commands.table'];
+        $this->app->singleton(DatabaseMigrationRepository::class, function ($app) {
+            $table = config('deploy-commands.table');
 
             return new DatabaseMigrationRepository($app['db'], $table);
         });
@@ -76,16 +68,14 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the migrator service.
-     *
-     * @return void
      */
-    protected function registerRunner()
+    protected function registerRunner(): void
     {
         // The migrator is responsible for actually running and rollback the migration
         // files in the application. We'll pass in our database connection resolver
         // so the migrator can resolve any of these connections when it needs to.
-        $this->app->singleton('deploy-commands.runner', function ($app) {
-            $repository = $app['deploy-commands.repository'];
+        $this->app->singleton(CommandRunner::class, function ($app) {
+            $repository = $app->make(DatabaseMigrationRepository::class);
 
             return new CommandRunner($app, $repository, $app['db'], $app['files']);
         });
@@ -93,41 +83,34 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the migration creator.
-     *
-     * @return void
      */
-    protected function registerCreator()
+    protected function registerCreator(): void
     {
-        $this->app->singleton('deploy-commands.creator', function ($app) {
+        $this->app->singleton(CommandCreator::class, function ($app) {
             return new CommandCreator($app['files']);
         });
     }
 
     /**
      * Register the command.
-     *
-     * @return void
      */
-    protected function registerMigrateInstallCommand()
+    protected function registerMigrateInstallCommand(): void
     {
-        $this->app->singleton('command.deploy-commands.install', function ($app) {
-            return new InstallCommand($app['deploy-commands.repository']);
+        $this->app->singleton(InstallCommand::class, function ($app) {
+            return new InstallCommand($app->make(DatabaseMigrationRepository::class));
         });
     }
 
     /**
      * Register the command.
-     *
-     * @return void
      */
-    protected function registerMakeCommand()
+    protected function registerMakeCommand(): void
     {
-        $this->app->singleton('command.deploy-commands.make', function ($app) {
+        $this->app->singleton(MakeCommand::class, function ($app) {
             // Once we have the migration creator registered, we will create the command
             // and inject the creator. The creator is responsible for the actual file
             // creation of the migrations, and may be extended by these developers.
-            $creator = $app['deploy-commands.creator'];
-
+            $creator = $app->make(CommandCreator::class);
             $composer = $app['composer'];
 
             return new MakeCommand($creator, $composer);
@@ -136,40 +119,33 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the command.
-     *
-     * @return void
      */
-    protected function registerRunCommand()
+    protected function registerRunCommand(): void
     {
-        $this->app->singleton('command.deploy-commands.run', function ($app) {
-            return new RunCommand($app['deploy-commands.runner']);
+        $this->app->singleton(RunCommand::class, function ($app) {
+            return new RunCommand($app->make(CommandRunner::class));
         });
     }
 
     /**
      * Register the command.
-     *
-     * @return void
      */
-    protected function registerMarkCommand()
+    protected function registerMarkCommand(): void
     {
-        $this->app->singleton('command.deploy-commands.mark', function ($app) {
-            return new MarkCommand($app['deploy-commands.runner']);
+        $this->app->singleton(MarkCommand::class, function ($app) {
+            return new MarkCommand($app->make(CommandRunner::class));
         });
     }
 
-
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
-            'deploy-commands.repository',
-            'deploy-commands.runner',
-            'deploy-commands.creator',
+            DatabaseMigrationRepository::class,
+            CommandRunner::class,
+            CommandCreator::class,
         ];
     }
 }
